@@ -1,0 +1,22 @@
+Package: MiRaGE
+Version: 0.99.2
+Title: MiRNA Ranking by Gene Expression
+Author: Y-h. Taguchi <tag@granular.com>
+Maintainer: Y-h. Taguchi <tag@granular.com>
+Depends: R (>= 2.12.1), Biobase(>= 2.16.0)
+Suggests: seqinr (>= 3.0.3), biomaRt (>= 2.6.0), GenomicFeatures (>=
+        1.8.1), Biostrings (>= 2.24.1), BSgenome.Hsapiens.UCSC.hg19,
+        BSgenome.Mmusculus.UCSC.mm9, miRNATarget, humanStemCell,
+        IRanges , GenomicRanges (>= 1.8.3), BSgenome,
+        beadarrayExampleData
+Imports: AnnotationDbi, BiocGenerics
+Description: The package contains functions for inferece of target gene regulation by miRNA.
+License: GPL
+Collate: MiRaGE_r.R HS_conv_id.R MM_conv_id.R id_conv_gen.R
+        TBL2_HS_gen.R TBL2_MM_gen.R MiRaGEAnalysis.R MiRaGEMean.R
+        MiRaGEMixed.R MiRaGEOneByOne.R getMiRaGEData.R
+biocViews: Microarray, GeneExpression, RNAseq, RNAseqData,
+        HighThroughputSequencingData, Sequencing, SAGE
+LazyLoad: yes
+Date: 2012-0421
+Packaged: 2012-05-10 01:42:36 UTC; tag

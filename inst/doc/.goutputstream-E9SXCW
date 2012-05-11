@@ -1,0 +1,276 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{How to use MiRaGE Package}
+%\VignetteKeywords{miRNA, gene expression}
+%\VignetteDepends{MiRaGE}
+%\VignettePackage{MiRaGE}
+%documentclass[12pt, a4paper]{article}
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
+\author{Y-h. Taguchi}
+\begin{document}
+\title{How to use MiRaGE Package}
+
+\maketitle
+\tableofcontents
+\section{Introduction}
+This document describes briefly how to use \verb+MiRaGE+ package in order to infer the target gene regulation by miRNA,  based upon target gene expression.  
+
+MiRaGE is based upon the algorithm proposed in \cite{LNCS,LNBI,IJMS}.
+
+
+\section{Quick start}
+%\begin{Sinput}
+%R> library(MiRaGE) ##load the MiRaGE package
+%R> data(x_gena) ##load  sample data
+%R> result <- MiRaGE(x_gene) ## excute MiRaGE function
+%\end{Sinput}
+%<<echo=F,results=hide>>=
+
+<<>>=
+library(MiRaGE)
+data(x_gene)
+result <- MiRaGE(x_gene,"HS")
+@
+
+Then \verb+result$P0+ and \verb+result$P1+ includes  $P$-values for upregulation and downregulation of target genes by miRNAs, respectively. The definition ``up" or ``down" depends upon the order of columns \verb+x_gene+ (see below).
+ 
+\underline{\bf Caution} You need internet access to execute \Rfunction{MiRaGE}, although it is possible to execute if off line (see below).
+
+
+\section{Data Structure}
+ \subsection{Input: target gene expression}
+In order to execute analysis, you need a dataframe or a matrix which stores target gene expression in it. In order to see this, it is easier to see sample data \verb+x_gene+ as follows.
+
+<<>>=
+data(x_gene)
+x_gene[101:103,]
+@
+
+The above example displays the 101th, 102th, and 103th rows in \verb+x_gene+.
+As you can see, each row corresponds to each gene and each column corresponds to 
+each sample (experiment). 
+
+The first column must has column name ``gene" and has to include gene names/probe ids.
+Since \verb+MiRaGE+ package  tries to compare two distinct states, you need at least a set of gene expression corresponding to each of them. 
+In \verb+x_gene+ data, we have two biological replicates of negative control and  the results one day after treatment. Thus, the 2nd and 3rd columns are named as \verb+neg.1+ and \verb+neg.2+, respectively (This means ``negative control 1" and ``negative control 2", respectively).
+The 4th and 5th columns include the two biological replicates one day after the treatment.
+Thus, they are names as \verb+day1.1+ and \verb+day1.2+, respectively.
+
+These column names which express distinct samples keep some flexibilities but must have the form $ group.n$, where $group$ corresponds to either of sample groups and $n$ must be integer starting from 1. This means, it you have $N$ biological replicates for the first group (typically it includes un-treated or negative control samples) names as $groupA$ and $M$ for the second group (typically it includes treated samples) names as $groupB$, data structure of dataframe/matrix which stores target gene expression is,
+\begin{verbatim}
+gene  groupA.1 groupA.1 ... groupA.N groupB.1 groupB.2 ... groupB.M
+gene1
+gene2 
+gene3
+....
+\end{verbatim}    
+
+The data structure of the first column is much easier. It can includes any of gene id which can be treated by \Rfunction{MiRaGE}. They can be a mixture of the different types of gene ids.
+In this case, only gene expression having gene id specified when \Rfunction{MiRaGE} is called 
+are treated as target genes. 
+
+The easiest way to generate dataframes/matrices  which include target gene expression may be importing files including gene expression using standard \verb+R+ function,
+
+<<>>=
+x_gene <- read.csv(system.file("csv/x_all_7a.csv",package="MiRaGE"),sep="\t")
+@
+
+For users' convenience, we have places a file \verb+x_all_7a.csv+ under \verb+csv+ directory.
+Please refer to this file for the preparation of files including target gene expression.
+
+
+\subsection{Output:  $P$-values}
+
+As mentioned in the above, output of \Rfunction{MiRaGE} is a list which includes two dataframes named as \verb+P0+ and \verb+P1+, respectively.
+\verb+P0+ includes the rejection probabilities that the target gene expression  in the first sample group is less than that in the second group. This means, smaller $P$-values indicate the target gene expression in the first sample group is more likely less than the second sample groups. Inversely, \verb+P1+ includes the rejection probabilities that the target gene expression in the second sample is less than that in the first group. Thus, smaller $P$-values indicate target gene expression in the second group is more likely less than the first groups.
+ 
+
+<<>>=
+result$P1[1:3,]
+@
+
+In the above, we have shown the first three lines in the dataframe \verb+results$P+.
+Since these are small, target genes of these three miRNAs is possibly expressive in the second group. In the first column of \verb+result$P0+ and \verb+result$P1+, names of considered miRNAs are listed. The number of miRNAs considered varys dependent upon the argument \verb+conv+ of \Rfunction{MiRaGE}. The second column includes $P$-values attributed to each miRNA.   Dependent upon argument \verb+method+, the number of columns which store $P$-values may change (see below).
+
+\section{Rapid use \& Off line use}
+
+\Rfunction{MiRaGE} every time tries to access \verb+MiRaGE Server+\footnote{http://www.granular.com/DATA/} to download target gene tables, gene id conversion table, and miRNA conservation table. It is a time consuming process. Especially, since the target gene table is huge, it may take a few minutes. It may not be often to use \Rfunction{MiRaGE} iteratively many times, we offer the method to avoid ``every time download".
+
+
+ 
+\subsection{Suppressing downloading}
+In \Rfunction{MiRaGE}, we offer the option to suppress downloading. If you repeatedly use \Rfunction{MiRaGE} with keeping either \verb+species+, \verb+ID+, or \verb+conv+ unchanged, you can suppress time consuming download process by specifying either \verb+species_force+, \verb+ID_force+, or \verb+conv_force+ as \verb+FALSE+ (Defaults for these are \verb+TRUE+).
+
+\underline{\bf Caution} Do not omit the arguments either \verb+species+, \verb+ID+, or \verb+conv+ if they differ from defaults, even if they are not modified during iterative usage and either  \verb+species_force+, \verb+ID_force+, or \verb+conv_corce+  is \verb+FALSE+. They are used for other purposes than  specifying what should be downloaded.
+
+\subsection{Save \& load tables}
+
+More advanced and convenient way is to save the objects storing target gene tables, gene id conversion table, and miRNA conservation table. 
+The names of objects are,
+\begin{itemize}
+\item{\verb+TBL2+} : Target gene tables
+\item{\verb+id_conv+} :  Gene id conversion table
+\item{\verb+conv_id+} :  MiRNA conservation table
+\end{itemize}
+Thus, for example \verb+TBL2+ is saved as
+<<>>=
+save(file="TBL2",TBL2)
+@
+you can use it later by loading as
+<<>>=
+load("TBL2")
+@
+Then you can execute \Rfunction{MiRaGE} with specifying \verb+species_force=F+ as
+<<eval=FALSE>>=
+result <- MiRaGE(...,species_force=F)
+@
+Now, you can skip time consuming download processes for the target gene table. 
+Similar procedures are possible  for \verb+id_conv+ and \verb+conv_id+, too.
+Execute \Rfunction{MiRaGE}, save downloaded tables, and use the tables later by loading them when these arguments take same values.
+
+\section{Multiple comparison correction}
+
+Obtained $P$-values are definitely underestimated, i.e., even if $P<0.05$, this does not mean the rejection probability is less than 0.05. If one prefers to use adjusted $P$-values, we recommend to use \Rfunction{p.adjust} with parameter of \verb+BH+, as
+<<>>=
+p.adjust(result$P1[,2],method="BH")
+@ 
+Then we can see which $P$-values are really significant, e.g., less than $0.05$.
+In addition to this, it will allow us to evaluate which miRNAs really regulate target genes, e.g.,
+<<>>=
+result$P1[,1][p.adjust(result$P1[,2],method="BH")<0.05]
+@
+\Robject{x\_gene} is the transfection expreiments of let-7a, it is reasnable that only a few miRNAs including let-7a have significant $P$-values.
+ 
+\section*{Appendix:Arguments}
+
+Functionality of \Rfunction{MiRaGE} changes dependent upon the values of arguments. In this section, we will try to explain how the functionality of \Rfunction{MiRaGE} changes.
+
+\subsection*{species}
+
+This specifies target species. Considered miRNAs are based upon miRBase\footnote{http://www.mirbase.org}. Rel. 18.  At the moment, supported species are human (``HS") and mouse (``MM"). \Rfunction{MiRaGE} downloads corresponding target gene table (named \verb+TBL2+) from MiRaGE Server. Default is ``MM".
+
+\subsection*{ID}
+This specifies gene ID. Default is ``refseq". If ID is not ``refseq",  \Rfunction{MiRaGE} downloads corresponding  gene id conversion table (called \verb+ID+) from RefSeq to specified gene ID from MiRaGE Server. Supported gene IDs are,
+
+\bigskip 
+
+\begin{tabular}{ll}
+\hline
+\multicolumn{2}{c}{common} \\
+ \verb+ID+ & description \\\hline
+``refseq" &  RefSeq (Default) \\\hline
+``agilent\_wholegenome" & Agilent WholeGenome \\
+``ccds" & CCDS ID \\
+``canonical\_transcript\_stable\_id" & Canonical transcript stable ID(s) \\
+``codelink" & Codelink \\
+``embl" & EMBL (Genbank) ID \\
+``ensembl\_gene\_id" & Ensembl Gene ID \\
+``ensembl\_peptide\_id" & Ensembl Protein ID \\
+``ensembl\_transcript\_id" & Ensembl Transcript ID \\
+``entrezgene" & EntrezGene ID \\
+``ipi" & IPI ID \\
+``interpro" & Interpro ID \\
+``pfam" & PFAM ID \\
+``phalanx\_onearray" & Phalanx OneArray \\
+``protein\_id" & Protein (Genbank) ID \\
+``refseq\_dna" & RefSeq DNA ID \\
+``refseq\_peptide" & RefSeq Protein ID \\
+``smart" & SMART ID \\
+``ucsc" & UCSC ID \\
+``uniprot\_genename" & UniProt Gene Name \\
+``unigene" & Unigene ID \\
+``wikigene\_name" & WikiGene name \\\hline
+\end{tabular}
+
+\bigskip 
+
+\begin{tabular}{ll}
+\hline
+\multicolumn{2}{c}{human}\\
+ \verb+ID+ & description \\\hline
+``affy\_hg\_u133\_plus\_2" & Affy HG U133-PLUS-2 \\
+``affy\_hg\_u133a" & Affy HG U133A \\
+``affy\_hg\_u133a\_2" & Affy HG U133A\_2 \\
+``affy\_hg\_u95a" & Affy HG U95A \\
+``affy\_hg\_u95av2" & Affy HG U95AV2 \\
+``affy\_huex\_1\_0\_st\_v2" & Affy HuEx 1\_0 st v2  \\
+``affy\_hugene\_1\_0\_st\_v1" & Affy HuGene 1\_0 st v1 \\
+``affy\_u133\_x3p" & Affy U133 X3P \\
+``hgnc\_id" & HGNC ID(s) \\
+``hgnc\_symbol" & HGNC symbol \\
+``hgnc\_transcript\_name" & HGNC transcript name \\
+``illumina\_humanht\_12" & Illumina Human HT 12 \\
+``illumina\_humanwg\_6\_v1" & Illumina HumanWG 6 v1 \\
+``illumina\_humanwg\_6\_v2" & Illumina HumanWG 6 v2 \\
+``illumina\_humanwg\_6\_v3" & Illumina HumanWG 6 v3 \\
+``pdb" & PDB ID \\
+\hline
+\end{tabular}
+
+\bigskip
+
+\begin{tabular}{ll}
+\hline
+\multicolumn{2}{c}{mouse}\\
+ \verb+ID+ & description \\\hline
+``affy\_moex\_1\_0\_st\_v1" & Affy MoEx \\
+``affy\_mogene\_1\_0\_st\_v1" & Affy MoGene \\
+``affy\_moe430a" & Affy moe430a \\
+``affy\_mouse430\_2" & Affy mouse430 2 \\
+``affy\_mouse430a\_2" & Affy mouse430a 2 \\
+``fantom" & Fantom ID \\
+``illumina\_mousewg\_6\_v1" & Illumina MouseWG 6 v1 \\
+``illumina\_mousewg\_6\_v2" & Illumina MouseWG 6 v2 \\
+``mgi\_id" & MGI ID \\
+``mgi\_symbol" & MGI symbol \\
+``mgi\_transcript\_name" & MGI transcript name \\
+\hline
+\end{tabular}
+
+\bigskip
+
+Requirements for supporting  any other gene IDs are welcomed.
+ 
+\subsection*{method}
+
+This specifies how to treat replicates. if \verb+method+ is ``mean", then 
+averaged gene  expression is attributed to each gene. If it is ``mixed", they are used for statistical test as it is. This means, the number of target genes attributed to each miRNAs is as many as the number of replicates. 
+If "one\_by\_one" is specified, all of combinations between the two  groups, i.e.,
+
+\begin{center}
+ groupA.1 $\times$ groupB.1, groupA.1 $\times$ groupB.2, \ldots , groupA.N $\times$ groupB.M. 
+\end{center}
+
+are condiered. Thus, in this case, both \verb+P0+ and \verb+P1+ have $1 + N \times M$ columns, the later $N \times M$ includes $P$-value for each of combinations. Default is  ``mean".
+
+\subsection*{test}
+
+This specifies the statititical methods to evaluate siginificance of reglation of target genes. Supported are ``ks" (Kolmogorov-Smirnov test), ``t" (t-test), and "wilcox" (Wilcoxon test). These are performed by standard \verb+R+ functions, \Rfunction{ks.test}, \Rfunction{t.test}, and \Rfunction{wilcox.test}, respectively. Default is "ks".
+ 
+\subsection*{conv}
+
+This specifies how well considered miRNAs must be conserved. Supported are ``conserved", ``weak\_conserv" and ``all". Baed upon TargetScan 6.0 \footnote{http://www.targetscan.org}, they correspond to broadly conserved, conserved, and others. For more detail, plese colusult with TargetScan. Default is ``conserv".
+
+\subsection*{Force download or not}
+
+\verb+species_force+, \verb+ID_force+, and \verb+conv_force+ spefify if target gene table, gene id conversion table, and miRNA conservation table are forced to be donwloaded. Dafult is \verb+T+. If some of them have already been downloded and one would like to use it as it is, please specify they are \verb+F+.
+
+\begin{thebibliography}{99}
+\bibitem{LNCS} Y-h Taguchi, Jun Yasuda, 2010,
