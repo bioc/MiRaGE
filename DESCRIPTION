@@ -10,7 +10,7 @@ Suggests: seqinr (>= 3.0.3), biomaRt (>= 2.6.0), GenomicFeatures (>=
         IRanges , GenomicRanges (>= 1.8.3), BSgenome,
         beadarrayExampleData
 Imports: AnnotationDbi, BiocGenerics
-Description: The package contains functions for inferece of target gene regulation by miRNA.
+Description: The package contains functions for inferece of target gene regulation by miRNA, based on only target gene expression profile.
 License: GPL
 Collate: MiRaGE_r.R HS_conv_id.R MM_conv_id.R id_conv_gen.R
         TBL2_HS_gen.R TBL2_MM_gen.R MiRaGEAnalysis.R MiRaGEMean.R
