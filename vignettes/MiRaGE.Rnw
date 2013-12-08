@@ -35,6 +35,8 @@ This document describes briefly how to use \verb+MiRaGE+ package in order to inf
 MiRaGE is based upon the algorithm proposed in \cite{LNCS,LNBI,IJMS}.
 Basically, its function is the same as the MiRaGE Server. In order to infer the target gene regulation by miRNAs, we made use of target gene (mRNA) expression. Suppose $x_{gs}$ is the expression of the $g$th gene in the $s$th sample. Then $P$-value to measure  the amount of target gene regulation by the $m$th  miRNAs is 
 computed by several statistical test.
+More detailed and comprehensive explanations can be found in \cite{iConceptpress}.
+
 
 \section{Background}
 
@@ -259,7 +261,7 @@ result$P1[order(result$P1[,2])[1:5],]
 \section{Rapid use \& Off line use}
 
 Although the default value of \verb+location+ is "local",
-when \verb+location+="web", \Rfunction{MiRaGE} every time tries to access \verb+MiRaGE Server+\footnote{http://www.granular.com/DATA/} to download target gene tables, gene id conversion table, and miRNA conservation table.  It is a time consuming process. Especially, since the target gene table is huge, it may take a few minutes. It may not be often to use \Rfunction{MiRaGE} iteratively many times, we offer the method to avoid ``every time download".
+when \verb+location+="web", \Rfunction{MiRaGE} every time tries to access \verb+MiRaGE Server+\footnote{http://www.granular.com/DATA2/} to download target gene tables, gene id conversion table, and miRNA conservation table.  It is a time consuming process. Especially, since the target gene table is huge, it may take a few minutes. It may not be often to use \Rfunction{MiRaGE} iteratively many times, we offer the method to avoid ``every time download".
 
 
 
@@ -268,7 +270,7 @@ when \verb+location+="web", \Rfunction{MiRaGE} every time tries to access \verb+
 \subsection{Suppressing downloading}
 In \Rfunction{MiRaGE}, we offer the option to suppress downloading. If you repeatedly use \Rfunction{MiRaGE} with keeping either \verb+species+, \verb+ID+, or \verb+conv+ unchanged, you can suppress time consuming download process by specifying either \verb+species_force+, \verb+ID_force+, or \verb+conv_force+ as \verb+FALSE+ (Defaults for these are \verb+TRUE+).
 
-\underline{\bf Caution} Do not omit the arguments either \verb+species+, \verb+ID+, or \verb+conv+ if they differ from defaults, even if they are not modified during iterative usage and either  \verb+species_force+, \verb+ID_force+, or \verb+conv_corce+  is \verb+FALSE+. They are used for other purposes than  specifying what should be downloaded.
+\underline{\bf Caution} Do not omit the arguments either \verb+species+, \verb+ID+, or \verb+conv+ if they differ from defaults, even if they are not modified during iterative usage and either  \verb+species_force+, \verb+ID_force+, or \verb+conv_force+  is \verb+FALSE+. They are used for other purposes than  specifying what should be downloaded.
 
 \subsection{Save \& load tables}
 
@@ -358,83 +360,110 @@ Functionality of \Rfunction{MiRaGE} changes dependent upon the values of argumen
 
 \subsection*{species}
 
-This specifies target species. Considered miRNAs are based upon miRBase\footnote{http://www.mirbase.org}. Rel. 18.  At the moment, supported species are human (``HS") and mouse (``MM"). \Rfunction{MiRaGE} downloads corresponding target gene table (named \verb+TBL2+) from MiRaGE Server. Default is ``MM".
+This specifies target species. Considered miRNAs are based upon miRBase\footnote{http://www.mirbase.org}. Rel. 20.  At the moment, supported species are human (``HS") and mouse (``MM"). \Rfunction{MiRaGE} downloads corresponding target gene table (named \verb+TBL2+) from MiRaGE Server. Default is ``MM".
 
 \subsection*{ID}
 This specifies gene ID. Default is ``refseq". If ID is not ``refseq",  \Rfunction{MiRaGE} downloads corresponding  gene id conversion table (called \verb+ID+) from RefSeq to specified gene ID from MiRaGE Server. Supported gene IDs are,
 
 \bigskip 
 
-\begin{tabular}{ll}
+\begin{tabular}{rll}
 \hline
-\multicolumn{2}{c}{common} \\
- \verb+ID+ & description \\\hline
-``refseq" &  RefSeq (Default) \\\hline
-``agilent\_wholegenome" & Agilent WholeGenome \\
-``ccds" & CCDS ID \\
-``canonical\_transcript\_stable\_id" & Canonical transcript stable ID(s) \\
-``codelink" & Codelink \\
-``embl" & EMBL (Genbank) ID \\
-``ensembl\_gene\_id" & Ensembl Gene ID \\
-``ensembl\_peptide\_id" & Ensembl Protein ID \\
-``ensembl\_transcript\_id" & Ensembl Transcript ID \\
-``entrezgene" & EntrezGene ID \\
-``ipi" & IPI ID \\
-``interpro" & Interpro ID \\
-``pfam" & PFAM ID \\
-``phalanx\_onearray" & Phalanx OneArray \\
-``protein\_id" & Protein (Genbank) ID \\
-``refseq\_dna" & RefSeq DNA ID \\
-``refseq\_peptide" & RefSeq Protein ID \\
-``smart" & SMART ID \\
-``ucsc" & UCSC ID \\
-``uniprot\_genename" & UniProt Gene Name \\
-``unigene" & Unigene ID \\
-``wikigene\_name" & WikiGene name \\\hline
+\multicolumn{3}{c}{common} \\
+ & \verb+ID+ & description \\\hline
+1 & ensembl\_gene\_id & Ensembl Gene ID \\ 
+  2 & ensembl\_transcript\_id & Ensembl Transcript ID \\ 
+  3 & ensembl\_peptide\_id & Ensembl Protein ID \\ 
+  4 & ensembl\_exon\_id & Ensembl Exon ID \\ 
+  5 & ccds & CCDS ID \\ 
+  6 & embl & EMBL (Genbank) ID \\ 
+  7 & entrezgene & EntrezGene ID \\ 
+  8 & merops & MEROPS ID \\ 
+  9 & pdb & PDB ID \\ 
+  10 & protein\_id & Protein (Genbank) ID \\ 
+  11 & refseq\_peptide & RefSeq Protein ID [e.g. NP\_001005353] \\ 
+  12 & rfam & Rfam ID \\ 
+  13 & rfam\_transcript\_name & Rfam transcript name \\ 
+  14 & ucsc & UCSC ID \\ 
+  15 & unigene & Unigene ID \\ 
+  16 & uniprot\_sptrembl & UniProt/TrEMBL Accession \\ 
+  17 & uniprot\_swissprot & UniProt/SwissProt ID \\ 
+  18 & uniprot\_swissprot\_accession & UniProt/SwissProt Accession \\ 
+  19 & uniprot\_genename & UniProt Gene Name \\ 
+  20 & uniprot\_genename\_transcript\_name & Uniprot Genename Transcript Name \\ 
+  21 & wikigene\_name & WikiGene Name \\ 
+  22 & wikigene\_id & WikiGene ID \\ 
+  23 & efg\_agilent\_sureprint\_g3\_ge\_8x60k & Agilent SurePrint G3 GE 8x60k probe \\ 
+  24 & efg\_agilent\_wholegenome\_4x44k\_v1 & Agilent WholeGenome 4x44k v1 probe \\ 
+  25 & efg\_agilent\_wholegenome\_4x44k\_v2 & Agilent WholeGenome 4x44k v2 probe \\ 
+  26 & codelink & Codelink probe \\ 
+  27 & phalanx\_onearray & Phalanx OneArray probe \\ 
+  28 & smart & SMART ID \\ 
+  29 & pfam & PFAM ID \\ 
+  30 & tigrfam & TIGRFam ID \\ 
+  31 & interpro & Interpro ID \\ 
+   \hline
 \end{tabular}
 
 \bigskip 
 
-\begin{tabular}{ll}
+\begin{tabular}{rll}
 \hline
-\multicolumn{2}{c}{human}\\
- \verb+ID+ & description \\\hline
-``affy\_hg\_u133\_plus\_2" & Affy HG U133-PLUS-2 \\
-``affy\_hg\_u133a" & Affy HG U133A \\
-``affy\_hg\_u133a\_2" & Affy HG U133A\_2 \\
-``affy\_hg\_u95a" & Affy HG U95A \\
-``affy\_hg\_u95av2" & Affy HG U95AV2 \\
-``affy\_huex\_1\_0\_st\_v2" & Affy HuEx 1\_0 st v2  \\
-``affy\_hugene\_1\_0\_st\_v1" & Affy HuGene 1\_0 st v1 \\
-``affy\_u133\_x3p" & Affy U133 X3P \\
-``hgnc\_id" & HGNC ID(s) \\
-``hgnc\_symbol" & HGNC symbol \\
-``hgnc\_transcript\_name" & HGNC transcript name \\
-``illumina\_humanht\_12" & Illumina Human HT 12 \\
-``illumina\_humanwg\_6\_v1" & Illumina HumanWG 6 v1 \\
-``illumina\_humanwg\_6\_v2" & Illumina HumanWG 6 v2 \\
-``illumina\_humanwg\_6\_v3" & Illumina HumanWG 6 v3 \\
-``pdb" & PDB ID \\
+\multicolumn{3}{c}{human}\\
+ & \verb+ID+ & description \\\hline1 & hgnc\_id & HGNC ID(s) \\ 
+  2 & hgnc\_symbol & HGNC symbol \\ 
+  3 & hgnc\_transcript\_name & HGNC transcript name \\ 
+  4 & affy\_hc\_g110 & Affy HC G110 probeset \\ 
+  5 & affy\_hg\_focus & Affy HG FOCUS probeset \\ 
+  6 & affy\_hg\_u133\_plus\_2 & Affy HG U133-PLUS-2 probeset \\ 
+  7 & affy\_hg\_u133a\_2 & Affy HG U133A\_2 probeset \\ 
+  8 & affy\_hg\_u133a & Affy HG U133A probeset \\ 
+  9 & affy\_hg\_u133b & Affy HG U133B probeset \\ 
+  10 & affy\_hg\_u95av2 & Affy HG U95AV2 probeset \\ 
+  11 & affy\_hg\_u95b & Affy HG U95B probeset \\ 
+  12 & affy\_hg\_u95c & Affy HG U95C probeset \\ 
+  13 & affy\_hg\_u95d & Affy HG U95D probeset \\ 
+  14 & affy\_hg\_u95e & Affy HG U95E probeset \\ 
+  15 & affy\_hg\_u95a & Affy HG U95A probeset \\ 
+  16 & affy\_hugenefl & Affy HuGene FL probeset \\ 
+  17 & affy\_huex\_1\_0\_st\_v2 & Affy HuEx 1\_0 st v2 probeset \\ 
+  18 & affy\_hugene\_1\_0\_st\_v1 & Affy HuGene 1\_0 st v1 probeset \\ 
+  19 & affy\_u133\_x3p & Affy U133 X3P probeset \\ 
+  20 & agilent\_cgh\_44b & Agilent CGH 44b probe \\ 
+  21 & illumina\_humanwg\_6\_v1 & Illumina HumanWG 6 v1 probe \\ 
+  22 & illumina\_humanwg\_6\_v2 & Illumina HumanWG 6 v2 probe \\ 
+  23 & illumina\_humanwg\_6\_v3 & Illumina HumanWG 6 v3 probe \\ 
+  24 & illumina\_humanht\_12 & Illumina Human HT 12 probe \\ 
 \hline
 \end{tabular}
 
 \bigskip
 
-\begin{tabular}{ll}
+\begin{tabular}{rll}
 \hline
-\multicolumn{2}{c}{mouse}\\
+\multicolumn{3}{c}{mouse}\\
  \verb+ID+ & description \\\hline
-``affy\_moex\_1\_0\_st\_v1" & Affy MoEx \\
-``affy\_mogene\_1\_0\_st\_v1" & Affy MoGene \\
-``affy\_moe430a" & Affy moe430a \\
-``affy\_mouse430\_2" & Affy mouse430 2 \\
-``affy\_mouse430a\_2" & Affy mouse430a 2 \\
-``fantom" & Fantom ID \\
-``illumina\_mousewg\_6\_v1" & Illumina MouseWG 6 v1 \\
-``illumina\_mousewg\_6\_v2" & Illumina MouseWG 6 v2 \\
-``mgi\_id" & MGI ID \\
-``mgi\_symbol" & MGI symbol \\
-``mgi\_transcript\_name" & MGI transcript name \\
+1 & fantom & Fantom ID \\ 
+  2 & ipi & IPI ID \\ 
+  3 & mgi\_id & MGI ID \\ 
+  4 & mgi\_symbol & MGI symbol \\ 
+  5 & mgi\_transcript\_name & MGI transcript name \\ 
+  6 & affy\_mg\_u74a & Affy mg u74a probeset \\ 
+  7 & affy\_mg\_u74av2 & Affy mg u74av2 probeset \\ 
+  8 & affy\_mg\_u74b & Affy mg u74b probeset \\ 
+  9 & affy\_mg\_u74bv2 & Affy mg u74bv2 probeset \\ 
+  10 & affy\_mg\_u74c & Affy mg u74c probeset \\ 
+  11 & affy\_mg\_u74cv2 & Affy mg u74cv2 probeset \\ 
+  12 & affy\_moe430a & Affy moe430a probeset \\ 
+  13 & affy\_moe430b & Affy moe430b probeset \\ 
+  14 & affy\_moex\_1\_0\_st\_v1 & Affy MoEx probeset \\ 
+  15 & affy\_mogene\_1\_0\_st\_v1 & Affy MoGene probeset \\ 
+  16 & affy\_mouse430\_2 & Affy mouse430 2 probeset \\ 
+  17 & affy\_mouse430a\_2 & Affy mouse430a 2 probeset \\ 
+  18 & affy\_mu11ksuba & Affy mu11ksuba probeset \\ 
+  19 & affy\_mu11ksubb & Affy mu11ksubb probeset \\ 
+  20 & illumina\_mousewg\_6\_v1 & Illumina MouseWG 6 v1 probe \\ 
+  21 & illumina\_mousewg\_6\_v2 & Illumina MouseWG 6 v2 probe \\ 
 \hline
 \end{tabular}
 
@@ -460,7 +489,7 @@ This specifies the statititical methods to evaluate siginificance of reglation o
  
 \subsection*{conv}
 
-This specifies how well considered miRNAs must be conserved. Supported are ``conserved", ``weak\_conserv" and ``all". Baed upon TargetScan 6.0 \footnote{http://www.targetscan.org}, they correspond to broadly conserved, conserved, and others. For more detail, plese colusult with TargetScan. Default is ``conserved".
+This specifies how well considered miRNAs must be conserved. Supported are ``conserved", ``weak\_conserv" and ``all". Baed upon TargetScan 7.2 \footnote{http://www.targetscan.org}, they correspond to broadly conserved, conserved, and others. For more detail, plese colusult with TargetScan. Default is ``conserved".
 
 \subsection*{Force download or not}
 
@@ -473,6 +502,10 @@ This specifies how well considered miRNAs must be conserved. Supported are ``con
 
 \bibitem{IJMS} M. Yoshizawa, Y-h. Taguchi, Jun Yasuda, 2011, Inference of Gene Regulation via miRNAs During ES Cell Differentiation Using MiRaGE Method, Int. J. Mol. Sci., 12[12]:9265-9276
  
+\bibitem{iConceptpress}
+Taguchi, Y-h. (2013). Inference of Target Gene Regulation by miRNA via MiRaGE Server. Introduction to Genetics - DNA Methylation, Histone Modification and Gene Regulation. ISBN: 978-1477554-94-4. iConcept Press. Retrieved from http://www.iconceptpress.com/books/ 
+IntroductionToGeneticsDNAMethylationHistoneModificationAndGeneRegulation/
+
 \end{thebibliography}
 
 \end{document}

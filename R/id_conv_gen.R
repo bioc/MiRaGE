@@ -21,6 +21,7 @@ for (i in c(i1:i2))
 {
 cat(i," ")
 id <- features[i,1]
+if (id == "refseq_mrna" | id == "refseq_ncrna") next
 id_conv <- getBM(attributes = c("refseq_mrna",as.character(id)),mart = ensembl)
 id_conv2 <- getBM(attributes = c("refseq_ncrna",as.character(id)),mart = ensembl)
 colnames(id_conv)[1] <- "refseq_mrna_ncrna"

@@ -12,7 +12,7 @@ if (location=="local")
  } else if (location=="web") {
   loadurl <- function(x)
   {
-  con <- url(paste("http://granular.com/MiRaGE/DATA/",x,sep=""))
+  con <- url(paste("http://granular.com/MiRaGE/DATA2/",x,sep=""))
   load(con,envir = parent.frame(n=3))
   close(con)
   }

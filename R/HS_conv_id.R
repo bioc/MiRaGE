@@ -8,7 +8,10 @@ cat(readLines(zz <- unz(paste(tempdir(),"miR_Family_Info.txt.zip",sep="/"),filen
 x <- read.fasta(paste(tempdir(),"mature.fa",sep="/"))
 x1 <- read.csv(paste(tempdir(),"miR_Family_Info.txt",sep="/"),sep="\t")
 miRNA<- names(x)[grep(species,names(x))]
-index <- match(miRNA,x1[x1[,3]==taxid,4])
+Annot <- lapply(x,attr,"Annot")
+Accession <- unlist(Annot)[grep(species,names(x))]
+Accession <- lapply(strsplit(Accession," "),"[",2)
+index <- match(Accession,x1[x1[,3]==taxid,7])
 conv_id <- data.frame(miRNA,x1[x1[,3]==taxid,6][index])
 conv_id[is.na(conv_id[,2]),2] <-0
 save(file=paste(destdir,"HS_conv_id",sep=""),conv_id)
