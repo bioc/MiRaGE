@@ -1,5 +1,5 @@
 Package: MiRaGE
-Version: 1.5.2
+Version: 1.5.3
 Title: MiRNA Ranking by Gene Expression
 Author: Y-h. Taguchi <tag@granular.com>
 Maintainer: Y-h. Taguchi <tag@granular.com>
@@ -10,13 +10,15 @@ Suggests: seqinr (>= 3.0.7), biomaRt (>= 2.19.1), GenomicFeatures (>=
         IRanges, GenomicRanges (>= 1.8.3), BSgenome,
         beadarrayExampleData
 Imports: AnnotationDbi, BiocGenerics
-Description: The package contains functions for inferece of target gene regulation by miRNA, based on only target gene expression profile.
+Description: The package contains functions for inferece of target gene
+        regulation by miRNA, based on only target gene expression
+        profile.
 License: GPL
 Collate: MiRaGE_r.R HS_conv_id.R MM_conv_id.R id_conv_gen.R
         TBL2_HS_gen.R TBL2_MM_gen.R MiRaGEAnalysis.R MiRaGEMean.R
         MiRaGEMixed.R MiRaGEOneByOne.R getMiRaGEData.R
-biocViews: Microarray, GeneExpression, RNAseq, RNAseqData,
-        HighThroughputSequencingData, Sequencing, SAGE
 LazyLoad: yes
 Date: 2013-1207
 Packaged: 2012-12-07 20:20:36 UTC; tag
+biocViews: Microarray, GeneExpression, RNASeq, RNAseqData, Sequencing,
+        Sequencing, SAGE
