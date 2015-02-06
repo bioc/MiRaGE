@@ -6,7 +6,7 @@ citEntry(entry = "Article",
          number = "12",
          year = "2011", 
          pages = "9265--9276",
-         doi = "http://dx.doi.org/10.3390/ijms12129265",
+         doi = "10.3390/ijms12129265",
          textVersion = "Yoshizawa, Masato; Taguchi, Y-h.; Yasuda, Jun. 2011. Inference of Gene Regulation via miRNAs During ES Cell Differentiation Using MiRaGE Method. Int. J. Mol. Sci. 12, no. 12: 9265-9276."
 ) 
 
