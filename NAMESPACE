@@ -1,6 +1,7 @@
 export("MiRaGE","HS_conv_id","MM_conv_id","id_conv_gen","TBL2_HS_gen","TBL2_MM_gen")
 export("getMiRaGEData")
-importMethodsFrom(AnnotationDbi, colnames)
 importMethodsFrom(BiocGenerics, cbind, paste, rownames, unique)
+import(S4Vectors)
+importMethodsFrom(AnnotationDbi, colnames)
 importFrom(stats, ks.test, t.test, wilcox.test)
 

@@ -1,5 +1,5 @@
 Package: MiRaGE
-Version: 1.13.0
+Version: 1.13.1
 Title: MiRNA Ranking by Gene Expression
 Author: Y-h. Taguchi <tag@granular.com>
 Maintainer: Y-h. Taguchi <tag@granular.com>
@@ -9,7 +9,7 @@ Suggests: seqinr (>= 3.0.7), biomaRt (>= 2.19.1), GenomicFeatures (>=
         BSgenome.Mmusculus.UCSC.mm10, miRNATarget, humanStemCell,
         IRanges, GenomicRanges (>= 1.8.3), BSgenome,
         beadarrayExampleData
-Imports: AnnotationDbi, BiocGenerics
+Imports: BiocGenerics, S4Vectors, AnnotationDbi
 Description: The package contains functions for inferece of target gene
         regulation by miRNA, based on only target gene expression
         profile.
