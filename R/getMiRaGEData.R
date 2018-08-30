@@ -5,8 +5,9 @@ if (location=="local")
  if(!require(miRNATarget, quietly=TRUE)) 
   {
   cat("Package:miRNATarget not available attempting to biocLite\n")
-  source("http://bioconductor.org/biocLite.R")
-  biocLite("miRNATarget")
+  if (!requireNamespace("BiocManager", quietly=TRUE))
+      install.packages("BiocManager")
+  BiocManager::install("miRNATarget")
   require(miRNATarget)
   }
  } else if (location=="web") {
